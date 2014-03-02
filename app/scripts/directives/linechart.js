@@ -12,16 +12,21 @@ angular.module('angularD3App')
       link: function postLink(scope, element) {
         scope.$watch('lineChartData', function (val) {
           if (typeof val !== 'undefined') {
-            init();
+            go();
           }
         });
 
-        function init() {
-          var margin = {top: 20, right: 20, bottom: 30, left: 50},
+        function go() {
+          var margin = {
+              top: 20,
+              right: 20,
+              bottom: 30,
+              left: 50
+            },
             width = element.width() - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
 
-          var parseDate = d3.time.format("%Y-%m").parse;
+          var parseDate = d3.time.format('%Y-%m').parse;
 
           var x = d3.time.scale()
             .range([0, width]);
@@ -31,31 +36,31 @@ angular.module('angularD3App')
 
           var xAxis = d3.svg.axis()
             .scale(x)
-            .orient("bottom");
+            .orient('bottom');
 
           var yAxis = d3.svg.axis()
             .scale(y)
-            .orient("left");
+            .orient('left');
 
           var line = d3.svg.line()
             .x(function (d) {
               return x(d.date);
             })
             .y(function (d) {
-              return y(d.close);
+              return y(d.value);
             });
 
-          var svg = d3.select(element[0]).append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          var svg = d3.select(element[0]).append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 
           var data = scope.lineChartData.map(function (d) {
             return {
               date: parseDate(d[0]),
-              close: d[1]
+              value: d[1]
             };
           });
 
@@ -64,30 +69,35 @@ angular.module('angularD3App')
           }));
 
           y.domain(d3.extent(data, function (d) {
-            return d.close;
+            return d.value;
           }));
 
-          svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
+          svg.append('g')
+            .attr('class', 'x axis')
+            .attr('transform', 'translate(0,' + height + ')')
             .call(xAxis)
-            .append("text")
-            .text("x");
+            .append('text')
+            .text('x axis')
+            .style('text-anchor', 'end')
+            .attr('transform', 'translate(' + width + ', -10)');
 
-          svg.append("g")
-            .attr("class", "y axis")
+          svg.append('g')
+            .attr('class', 'y axis')
             .call(yAxis)
-            .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", ".71em")
-            .style("text-anchor", "end")
-            .text("y");
+            .append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('y', 6)
+            .attr('dy', '.71em')
+            .style('text-anchor', 'end')
+            .text('y')
+            .attr('transform', 'rotate(0)')
+            .attr('transform', 'translate(20, 0)')
+          ;
 
-          svg.append("path")
+          svg.append('path')
             .datum(data)
-            .attr("class", "line")
-            .attr("d", line);
+            .attr('class', 'line')
+            .attr('d', line);
 
         }
 

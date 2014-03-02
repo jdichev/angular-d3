@@ -1,0 +1,15 @@
+
+
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+
+.axis line,
+.axis path,
+.axis line,
+.axis path {
+    fill: none;
+    stroke: #000;
+}

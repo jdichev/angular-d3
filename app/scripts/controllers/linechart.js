@@ -3,7 +3,6 @@
 angular.module('angularD3App')
   .controller('LinechartCtrl', function ($scope) {
     $scope.chartData = [
-      // ['Month', 'Number'],
       ['2014-01', 200],
       ['2014-02', 435],
       ['2014-03', 200],
