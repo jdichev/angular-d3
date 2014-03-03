@@ -1,11 +1,12 @@
 'use strict';
 
-angular.module('angularD3App')
+angular.module('angular-D3-lineChart', [])
   .directive('lineChart', function () {
     return {
       template: '<div></div>',
       scope: {
-        lineChartData: '=chartData'
+        lineChartData: '=chartData',
+        lineChartConfig: '=chartConfig'
       },
       replace: true,
       restrict: 'AE',

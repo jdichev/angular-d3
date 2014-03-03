@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('angularD3App', [
-  'ngRoute'
+  'ngRoute',
+  'angular-D3'
 ])
   .config(function ($routeProvider) {
     $routeProvider
