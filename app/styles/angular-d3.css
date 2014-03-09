@@ -2,7 +2,7 @@
 
 .line {
     fill: none;
-    stroke: steelblue;
+    stroke: #000;
     stroke-width: 1.5px;
 }
 
@@ -12,4 +12,8 @@
 .axis path {
     fill: none;
     stroke: #000;
+}
+
+text {
+    font-size: 85%;
 }
