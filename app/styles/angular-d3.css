@@ -17,3 +17,13 @@
 text {
     font-size: 85%;
 }
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.focus circle {
+    /*fill: none;*/
+    /*stroke: steelblue;*/
+}
