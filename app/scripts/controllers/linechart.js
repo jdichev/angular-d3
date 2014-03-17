@@ -2,19 +2,24 @@
 
 angular.module('angularD3App')
   .controller('LinechartCtrl', function ($scope) {
+
+    function getRandomInt(min, max) {
+      return Math.round(Math.random() * (max - min + 1)) + min;
+    }
+
     $scope.chartData = [
-      ['date', 'col1', 'col2', 'col3'],
-      ['2014-01', 200, 100, 200],
-      ['2014-02', 435, 135, 80],
-      ['2014-03', 200, 400, 200],
-      ['2014-04', 200, 50, 200],
-      ['2014-05', 267, 467, 600],
-      ['2014-06', 200, 400, 500],
-      ['2014-07', 200, 100, 50],
-      ['2014-08', 67, 300, 20],
-      ['2014-09', 200, 220, 800],
-      ['2014-10', 34, 4, 200],
-      ['2014-11', 200, 280, 250],
-      ['2014-12', 870, 970, 500]
+      ['date', 'col1', 'col2', 'col3']
     ];
+
+    var startYear = 2001,
+      years = 6;
+    for (var yearsIndex = 0; yearsIndex < years; yearsIndex += 1) {
+      var year = startYear + yearsIndex;
+      for (var monthIndex = 1, months = 12; monthIndex < months; monthIndex += 1) {
+        $scope.chartData.push(
+          [year + '-' + monthIndex, getRandomInt(20, 1200), getRandomInt(20, 1200), getRandomInt(20, 1200)]
+        );
+      }
+    }
+
   });
