@@ -20,56 +20,70 @@ angular.module('angular-D3-lineChart', [])
 
         function go() {
           var margins = {
-              top: 20,
-              right: 20,
-              bottom: 30,
-              left: 50
-            },
+            top: 20,
+            right: 20,
+            bottom: 30,
+            left: 50
+          };
 
-            d3 = window.d3,
+          var d3 = window.d3;
 
-            width = element.width() - margins.left - margins.right,
+          var width = element.width() - margins.left - margins.right;
 
-            height = 300 - margins.top - margins.bottom,
+          var height = 300 - margins.top - margins.bottom;
 
-            color = d3.scale.category10(),
+          var previewOverlayWidth = 200;
+          var previewOverlayHeight = 32;
 
-            parseDate = d3.time.format('%Y-%m').parse,
+          var getXPosition = function (x) {
+            var halfWidth = width / 2;
+            if (x > halfWidth) {
+              return x + -1 * (previewOverlayWidth + (previewOverlayWidth / 2));
+            }
+            else {
+              return x + (previewOverlayWidth / 2);
+            }
+          };
 
-            bisectDate = d3.bisector(function (d) {
-              return d.date;
-            }).left,
+          var color = d3.scale.category10();
 
-            x = d3.time.scale()
-              .range([0, width]),
+          var parseDate = d3.time.format('%Y-%m').parse;
 
-            y = d3.scale.linear()
-              .range([height, 0]),
+          var bisectDate = d3.bisector(function (d) {
+            return d.date;
+          }).left;
 
-            xAxis = d3.svg.axis()
-              .scale(x)
-              .orient('bottom')
-              .tickSize(4),
+          var x = d3.time.scale()
+            .range([0, width]);
 
-            yAxis = d3.svg.axis()
-              .scale(y)
-              .orient('left'),
+          var y = d3.scale.linear()
+            .range([height, 0]);
 
-            line = d3.svg.line()
-              .x(function (d) {
-                return x(d.date);
-              })
-              .y(function (d) {
-                return y(d.value);
-              }),
+          var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient('bottom')
+            .tickSize(4);
 
-            svg = d3.select(element[0]).append('svg')
-              .attr('width', width + margins.left + margins.right)
-              .attr('height', height + margins.top + margins.bottom)
-              .append('g')
-              .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
+          var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient('left');
+
+          var line = d3.svg.line()
+            .x(function (d) {
+              return x(d.date);
+            })
+            .y(function (d) {
+              return y(d.value);
+            });
+
+          var svg = d3.select(element[0]).append('svg')
+            .attr('width', width + margins.left + margins.right)
+            .attr('height', height + margins.top + margins.bottom)
+            .append('g')
+            .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
 
           var data = [];
+
           for (var i = 1, dataHeaderLength = scope.lineChartData[0].length; i < dataHeaderLength; i += 1) {
             var colData = {
               name: scope.lineChartData[0][i],
@@ -144,9 +158,24 @@ angular.module('angular-D3-lineChart', [])
           focus.append('circle')
             .attr('r', 3);
 
-          focus.append('text')
-            .attr('x', 9)
-            .attr('dy', '.35em');
+          var previewOverlay = svg.selectAll('.preview-overlay')
+            .data(data)
+            .enter()
+            .append('g')
+            .attr('class', 'preview-overlay')
+            .style('display', 'none');
+
+          var topOffset = (function () {
+            return (height / 2) - ((data.length * previewOverlayHeight) / 2);
+          })();
+
+          previewOverlay
+            .append('rect')
+            .attr('width', previewOverlayWidth)
+            .attr('height', previewOverlayHeight);
+
+          previewOverlay
+            .append('text');
 
           svg.append('rect')
             .attr('class', 'overlay')
@@ -154,9 +183,11 @@ angular.module('angular-D3-lineChart', [])
             .attr('height', height)
             .on('mouseover', function () {
               focus.style('display', null);
+              previewOverlay.style('display', null);
             })
             .on('mouseout', function () {
               focus.style('display', 'none');
+              previewOverlay.style('display', 'none');
             })
             .on('mousemove', function () {
 
@@ -168,13 +199,59 @@ angular.module('angular-D3-lineChart', [])
                   var value = d.values[i];
 
                   return 'translate(' + x(value.date) + ',' + y(value.value) + ')';
-                })
-                .select('text')
+                });
+
+              previewOverlay
+                .transition()
+                .duration(300)
+                .delay(0)
+                .attr('transform', function (d, index) {
+                var value = d.values[i];
+                return 'translate(' +
+                  getXPosition(x(value.date)) + ',' +
+                  (topOffset + (index * previewOverlayHeight)) +
+                  ')';
+              });
+
+              previewOverlay
+                .selectAll('text')
                 .text(function (d) {
                   var value = d.values[i];
 
-                  return value.value;
-                });
+                  return value.value + ' (' + d.name + ')';
+                })
+                .style('fill', function (d) {
+                  return color(d.name);
+                })
+//                .attr('x', function (d) {
+//                  var value = d.values[i];
+//                  if (x(value.date) > width / 2) {
+//                    return 9;
+//                  }
+//                  else {
+//                    return -9;
+//                  }
+//                })
+                .style('text-anchor', function (d) {
+                  var value = d.values[i];
+                  if (x(value.date) > width / 2) {
+                    return 'end';
+                  }
+                  else {
+                    return 'start';
+                  }
+                })
+
+                .attr('transform', function (d) {
+                  var value = d.values[i];
+                  if (x(value.date) > width / 2) {
+                    return 'translate(' + (previewOverlayWidth - 10) + ',20)';
+                  }
+                  else {
+                    return 'translate(10,20)';
+                  }
+                })
+              ;
 
             });
 

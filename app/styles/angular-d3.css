@@ -23,7 +23,30 @@ text {
   pointer-events: all;
 }
 
+.preview-overlay {
+    fill: linen;
+
+    -webkit-transition: 1s ;
+    -moz-transition: 1s ;
+    -o-transition: 1s ;
+    transition: 1s ;
+}
+
+.preview-overlay text {
+    fill: black;
+}
+
+.focus {
+    fill: steelblue;
+}
+
 .focus circle {
-    /*fill: none;*/
+    fill: red;
+    /*fill: magenta;*/
     /*stroke: steelblue;*/
+}
+
+.focus text {
+    fill: red;
+    font-size: 180%;
 }
