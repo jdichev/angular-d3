@@ -24,12 +24,7 @@ text {
 }
 
 .preview-overlay {
-    fill: linen;
-
-    -webkit-transition: 1s ;
-    -moz-transition: 1s ;
-    -o-transition: 1s ;
-    transition: 1s ;
+    fill: #353535;
 }
 
 .preview-overlay text {
@@ -42,8 +37,6 @@ text {
 
 .focus circle {
     fill: red;
-    /*fill: magenta;*/
-    /*stroke: steelblue;*/
 }
 
 .focus text {
