@@ -3,15 +3,32 @@
 angular.module('angularD3App')
   .controller('LinechartCtrl', function ($scope) {
 
-    function getRandomInt(min, max) {
-      return Math.round(Math.random() * (max - min + 1)) + min;
+    function RandomGenerator() {
+      this.randomCache = {};
     }
 
-    function getChartData() {
-      return [year + '-' + monthIndex, getRandomInt(20, 400), getRandomInt(20, 1200), getRandomInt(20, 1200)];
+    RandomGenerator.prototype.getInt = function(min, max, cacheId) {
+      if (this.randomCache.hasOwnProperty(cacheId) && Math.random() > 0.33) {
+        return this.randomCache[cacheId];
+      }
+
+      var randomInt = Math.round(Math.random() * (max - min + 1)) + min;
+      this.randomCache[cacheId] = randomInt;
+      return randomInt;
+    };
+
+    var randomGenerator = new RandomGenerator();
+
+    function getChartData(year, monthIndex) {
+      return [
+        year + '-' + monthIndex,
+        randomGenerator.getInt(20, 400, '1'),
+        randomGenerator.getInt(20, 1200, '2'),
+        randomGenerator.getInt(20, 1200, '3')
+      ];
     }
 
-    $scope.chartData = [
+    var chartData = [
       ['date', 'col1', 'col2', 'col3']
     ];
 
@@ -20,18 +37,11 @@ angular.module('angularD3App')
     for (var yearsIndex = 0; yearsIndex < years; yearsIndex += 1) {
       var year = startYear + yearsIndex;
 
-      var curChartData;
-
       for (var monthIndex = 1, months = 12; monthIndex < months; monthIndex += 1) {
-        curChartData = curChartData || getChartData();
-        if (Math.random() > 0.75) {
-          curChartData = getChartData();
-          $scope.chartData.push(curChartData);
-        }
-        else {
-          $scope.chartData.push(curChartData);
-        }
+        chartData.push(getChartData(year, monthIndex));
       }
     }
+
+    $scope.chartData = chartData;
 
   });
