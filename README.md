@@ -1,4 +1,4 @@
-spadata - angular, d3 experiments
-=================================
+spadata - D3.js experiments in AngularJS context
+================================================
 
-AngularJS + D3.js experiments
+D3.js + AngularJS = Fun
